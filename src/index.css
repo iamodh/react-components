@@ -1,4 +1,8 @@
 /* Reset */
+
+body {
+  margin: unset;
+}
 ul {
   padding: unset;
 }
