@@ -155,10 +155,6 @@ export default function Calender() {
       selectedDay.current.style.backgroundColor = "blue";
       selectedDay.current.previousColor = selectedDay.current.style.color;
       selectedDay.current.style.color = "white";
-
-      console.log(
-        `선택된 날짜: ${date.year}년 ${date.month}월 ${selectedDay.current.innerText}일`
-      );
     }
   };
 
@@ -166,6 +162,11 @@ export default function Calender() {
     <>
       <Wrapper $isModal={isModal}>
         <Button onClick={handleModal}>{isModal ? "Off" : "On"}</Button>
+        {selectedDay.current && (
+          <p>
+            {`선택된 날짜: ${date.year}년 ${date.month}월 ${selectedDay.current.innerText}일`}
+          </p>
+        )}
         {isModal && (
           <Modal>
             <Month>
