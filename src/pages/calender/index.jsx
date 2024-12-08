@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -32,39 +32,108 @@ const Modal = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  gap: 48px;
 `;
 
 const Month = styled.div`
   display: flex;
   align-items: center;
   gap: 24px;
-  margin-top: 24px;
+  margin-top: 20px;
 `;
 
 const Days = styled.div`
-  display: flex;
-  align-items: center;
+  display: grid;
+  width: 400px;
+  gap: 16px;
+  grid-template-columns: repeat(7, 40px);
+  grid-auto-rows: 40px;
+  justify-content: center;
+
+  span:nth-child(7n + 1) {
+    color: red;
+  }
+
+  span:nth-child(7n) {
+    color: blue;
+  }
+
+  span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 50px;
+  }
 `;
 
 export default function Calender() {
+  const getFirstDayOfWeek = (year, month) => {
+    return new Date(year, month - 1, 1).getDay();
+  };
+
+  const getLastDay = (year, month) => {
+    return new Date(date.year, date.month, 0).getDate();
+  };
+
   const [isModal, setIsModal] = useState(false);
-  const [month, setMonth] = useState(1);
+
+  const today = new Date();
+  const [date, setDate] = useState({
+    year: today.getFullYear(),
+    month: today.getMonth() + 1,
+    day: today.getDate(),
+  });
+
+  const [days, setDays] = useState(
+    // ["","","", 1, 2, 3, ... , 31]
+    [
+      ...Array(getFirstDayOfWeek(date.year, date.month)).fill(""),
+      ...Array(getLastDay(date.year, date.month)).keys(),
+    ].map((i) => {
+      if (i === "") return "";
+      else return i + 1;
+    })
+  );
 
   const handleModal = () => {
     setIsModal((prev) => !prev);
   };
 
   const handleMonthDown = () => {
-    if (month <= 1) setMonth(12);
-    else setMonth((month) => month - 1);
+    if (date.month <= 1)
+      setDate((prev) => {
+        return { ...prev, year: prev.year - 1, month: 12 };
+      });
+    else
+      setDate((prev) => {
+        return { ...prev, month: prev.month - 1 };
+      });
   };
+
+  useEffect(() => {
+    setDays(
+      [
+        ...Array(getFirstDayOfWeek(date.year, date.month)).fill(""),
+        ...Array(getLastDay(date.year, date.month)).keys(),
+      ].map((i) => {
+        if (i === "") return "";
+        else return i + 1;
+      })
+    );
+  }, [date]);
 
   const handleMonthUp = () => {
-    if (month >= 12) setMonth(1);
-    else setMonth((month) => month + 1);
+    if (date.month >= 12)
+      setDate((prev) => {
+        return { ...prev, year: prev.year + 1, month: 1 };
+      });
+    else
+      setDate((prev) => {
+        return { ...prev, month: prev.month + 1 };
+      });
   };
 
+  console.log(days);
   return (
     <>
       <Wrapper $isModal={isModal}>
@@ -73,11 +142,20 @@ export default function Calender() {
           <Modal>
             <Month>
               <button onClick={handleMonthDown}>{"<"}</button>
-              <h2>{month}월</h2>
+              <h2>
+                {date.year}년 {date.month}월
+              </h2>
               <button onClick={handleMonthUp}>{">"}</button>
             </Month>
             <Days>
-              <span>1</span>
+              {["일", "월", "화", "수", "목", "금", "토"].map((i) => (
+                <span style={{ fontWeight: "bold" }} key={i}>
+                  {i}
+                </span>
+              ))}
+              {days.map((day, index) => (
+                <span key={index}>{day}</span>
+              ))}
             </Days>
           </Modal>
         )}
