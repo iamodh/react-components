@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -57,12 +57,21 @@ const Days = styled.div`
     color: blue;
   }
 
+  span.days {
+    border: 1px solid transparent;
+    border-radius: 50%;
+    transition: all linear 0.1s;
+    cursor: pointer;
+  }
+
+  span.days:hover {
+    border: 1px solid black;
+  }
+
   span {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid black;
-    border-radius: 50px;
   }
 `;
 
@@ -72,7 +81,7 @@ export default function Calender() {
   };
 
   const getLastDay = (year, month) => {
-    return new Date(date.year, date.month, 0).getDate();
+    return new Date(year, month, 0).getDate();
   };
 
   const [isModal, setIsModal] = useState(false);
@@ -94,6 +103,8 @@ export default function Calender() {
       else return i + 1;
     })
   );
+
+  const selectedDay = useRef(null);
 
   const handleModal = () => {
     setIsModal((prev) => !prev);
@@ -133,7 +144,24 @@ export default function Calender() {
       });
   };
 
-  console.log(days);
+  const handleDaysClick = (event) => {
+    if (selectedDay.current) {
+      selectedDay.current.style.backgroundColor = "transparent";
+      selectedDay.current.style.color = selectedDay.current.previousColor;
+    }
+
+    selectedDay.current = event.target;
+    if (selectedDay.current.innerText !== "") {
+      selectedDay.current.style.backgroundColor = "blue";
+      selectedDay.current.previousColor = selectedDay.current.style.color;
+      selectedDay.current.style.color = "white";
+
+      console.log(
+        `선택된 날짜: ${date.year}년 ${date.month}월 ${selectedDay.current.innerText}일`
+      );
+    }
+  };
+
   return (
     <>
       <Wrapper $isModal={isModal}>
@@ -154,7 +182,13 @@ export default function Calender() {
                 </span>
               ))}
               {days.map((day, index) => (
-                <span key={index}>{day}</span>
+                <span
+                  className={day === "" ? "" : "days"}
+                  onClick={handleDaysClick}
+                  key={index}
+                >
+                  {day}
+                </span>
               ))}
             </Days>
           </Modal>
