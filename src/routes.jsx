@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "./components/layout";
 import MainPage from "./pages";
 import Calender from "./pages/calender";
+import Sidebar from "./pages/sidebar";
 
 const router = createBrowserRouter(
   [
@@ -16,6 +17,10 @@ const router = createBrowserRouter(
         {
           path: "/calender",
           element: <Calender />,
+        },
+        {
+          path: "/sidebar",
+          element: <Sidebar />,
         },
       ],
     },

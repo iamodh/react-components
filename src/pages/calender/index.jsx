@@ -76,39 +76,20 @@ const Days = styled.div`
 `;
 
 export default function Calender() {
-  const getFirstDayOfWeek = (year, month) => {
-    return new Date(year, month - 1, 1).getDay();
-  };
-
-  const getLastDay = (year, month) => {
-    return new Date(year, month, 0).getDate();
-  };
-
+  // 모달 관리
   const [isModal, setIsModal] = useState(false);
 
+  const handleModal = () => {
+    setIsModal((prev) => !prev);
+  };
+
+  // 달력 년 월 표시
   const today = new Date();
   const [date, setDate] = useState({
     year: today.getFullYear(),
     month: today.getMonth() + 1,
     day: today.getDate(),
   });
-
-  const [days, setDays] = useState(
-    // ["","","", 1, 2, 3, ... , 31]
-    [
-      ...Array(getFirstDayOfWeek(date.year, date.month)).fill(""),
-      ...Array(getLastDay(date.year, date.month)).keys(),
-    ].map((i) => {
-      if (i === "") return "";
-      else return i + 1;
-    })
-  );
-
-  const selectedDay = useRef(null);
-
-  const handleModal = () => {
-    setIsModal((prev) => !prev);
-  };
 
   const handleMonthDown = () => {
     if (date.month <= 1)
@@ -120,6 +101,37 @@ export default function Calender() {
         return { ...prev, month: prev.month - 1 };
       });
   };
+
+  const handleMonthUp = () => {
+    if (date.month >= 12)
+      setDate((prev) => {
+        return { ...prev, year: prev.year + 1, month: 1 };
+      });
+    else
+      setDate((prev) => {
+        return { ...prev, month: prev.month + 1 };
+      });
+  };
+
+  // 달력 일 수 표시 알고리즘
+  const getFirstDayOfWeek = (year, month) => {
+    return new Date(year, month - 1, 1).getDay();
+  };
+
+  const getLastDay = (year, month) => {
+    return new Date(year, month, 0).getDate();
+  };
+
+  const [days, setDays] = useState(
+    // ["","","", 1, 2, 3, ... , 31]
+    [
+      ...Array(getFirstDayOfWeek(date.year, date.month)).fill(""),
+      ...Array(getLastDay(date.year, date.month)).keys(),
+    ].map((i) => {
+      if (i === "") return "";
+      else return i + 1;
+    })
+  );
 
   useEffect(() => {
     setDays(
@@ -133,16 +145,8 @@ export default function Calender() {
     );
   }, [date]);
 
-  const handleMonthUp = () => {
-    if (date.month >= 12)
-      setDate((prev) => {
-        return { ...prev, year: prev.year + 1, month: 1 };
-      });
-    else
-      setDate((prev) => {
-        return { ...prev, month: prev.month + 1 };
-      });
-  };
+  // 날짜 선택 관리
+  const selectedDay = useRef(null);
 
   const handleDaysClick = (event) => {
     if (selectedDay.current) {
