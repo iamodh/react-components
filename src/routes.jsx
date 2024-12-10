@@ -3,6 +3,7 @@ import Layout from "./components/layout";
 import MainPage from "./pages";
 import Calender from "./pages/calender";
 import Sidebar from "./pages/sidebar";
+import Carousel from "./pages/carousel";
 
 const router = createBrowserRouter(
   [
@@ -21,6 +22,10 @@ const router = createBrowserRouter(
         {
           path: "/sidebar",
           element: <Sidebar />,
+        },
+        {
+          path: "/carousel",
+          element: <Carousel />,
         },
       ],
     },

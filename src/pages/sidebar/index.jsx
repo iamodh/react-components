@@ -19,12 +19,15 @@ const fadeOut = keyframes`
 `;
 
 const Wrapper = styled.div`
-  overflow-x: hidden;
+  display: flex;
+  overflow: hidden;
+  background-color: ${(props) =>
+    props.$active ? `rgba(0, 0, 0, 0.5);` : "transparent"};
 `;
 
 const Container = styled.div`
   width: 300px;
-  height: calc(100vh - 30px);
+  height: 100vh;
   margin-left: auto;
   background-color: green;
   position: relative;
@@ -49,7 +52,7 @@ export default function Sidebar() {
   const [active, setActive] = useState(false);
 
   return (
-    <Wrapper>
+    <Wrapper $active={active}>
       <Button
         onClick={() => {
           setActive(true);
